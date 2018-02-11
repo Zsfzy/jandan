@@ -22,8 +22,7 @@ class jiandan(object):
         return int(str(time.time())[0:10])
 
     def md5(self, str):
-        str = str.encode('utf8')
-        return hashlib.md5(str).hexdigest()
+        return hashlib.md5(str.encode('utf8')).hexdigest()
 
     def getKey(self, text):
         m = re.search(r'//cdn.jandan.net/static/min/\S*\d{8}\.js{1}', text)

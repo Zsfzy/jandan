@@ -16,7 +16,7 @@ class jiandan(object):
         self.agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0"
         self.headers = {'User-Agent': self.agent}
         self.timeout = 10
-        self.key = 'bi55LhiUEm8pwbfPP98kqrlzG2gWa0Nm'
+        self.key = None
 
     def time(self):
         return int(str(time.time())[0:10])
@@ -26,9 +26,11 @@ class jiandan(object):
         return hashlib.md5(str).hexdigest()
 
     def getKey(self, text):
-        s = r'cdn.jandan.net/static/min/\S*\d{8}\.js{1}'
-        url = '123'
-        # r = self.getData(url)
+        m = re.search(r'//cdn.jandan.net/static/min/\S*\d{8}\.js{1}', text)
+        url = 'https:' + m.group(0)
+        r = self.getData(url)
+        m = re.search(r'f_\S*\(e,"(\S*)"\)', r.text)
+        self.key = m.group(1)
 
     def getData(self, url, headers = None, timeout = None):
         if headers == None:
@@ -126,7 +128,7 @@ class jiandan(object):
         #     else:
         #         t = ''
         t = t[26:]
-        return t;
+        return t
 
 if __name__ == "__main__":
     jiandan().meizi()

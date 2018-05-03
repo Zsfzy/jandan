@@ -28,7 +28,7 @@ class jiandan(object):
         m = re.search(r'//cdn.jandan.net/static/min/\S*\d{8}\.js{1}', text)
         url = 'https:' + m.group(0)
         r = self.getData(url)
-        m = re.search(r'f_\S*\(e,"(\S*)"\)', r.text)
+        m = re.search(r'var c=\S+\(e,"(\S+)"\);', r.text)
         self.key = m.group(1)
 
     def getData(self, url, headers = None, timeout = None):
@@ -48,9 +48,7 @@ class jiandan(object):
             return False
         return r
 
-    def meizi(self, page = 1, fullImg = None):
-        fullImg = 1
-        print("当前正在爬取页面:%d" %(page))
+    def meizi(self, page = 1):
         url = "http://jandan.net/ooxx/page-%d#comments" % (page)
         r = self.getData(url)
         if r:
@@ -59,14 +57,13 @@ class jiandan(object):
             for img_hash in text.find_all(class_ = 'img-hash'):
                 if self.key == None:
                     self.getKey(r.text)
-                img_urls.append(self.decrypt_img_hash(img_hash.get_text(), self.key))
-            print(img_urls)
-
-        if fullImg:
-            nextPage = text.find(class_ = 'next-comment-page')
-            if nextPage:
-                time.sleep(50)
-                self.meizi(page + 1, 1)
+                img_urls.append('https:'+self.decrypt_img_hash(img_hash.get_text(), self.key))
+            return img_urls
+        return
+        #     nextPage = text.find(class_ = 'next-comment-page')
+        #     if nextPage:
+        #         time.sleep(50)
+        #         self.meizi(page + 1, 1)
 
     def decrypt_img_hash(self, m, r, d = None):
         e = 'DECODE'
@@ -76,7 +73,7 @@ class jiandan(object):
         r = self.md5(r)
         # js的截取是从第X个位置截取x个字符字符 。而python的是从第X个位置截取到第X个位置
         o = self.md5(r[0:16])
-        n = self.md5(r[16:32])
+        # n = self.md5(r[16:32])
 
         if q:
             if e == 'DECODE':
@@ -129,7 +126,12 @@ class jiandan(object):
         t = t[26:]
         return t
 
-if __name__ == "__main__":
-    jiandan().meizi()
 
+def main():
+    main = jiandan()
+    print(main.meizi(1))
+    
+    pass
 
+if __name__ == '__main__':
+    main()

@@ -13,7 +13,9 @@ def base64_decode(str):
 
 class jiandan(object):
     def __init__(self):
-        self.agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0"
+        # self.agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0"
+        # 会因为agent的不同给出不同的解密方式. 
+        self.agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0"
         self.headers = {'User-Agent': self.agent}
         self.timeout = 10
         self.key = None
@@ -58,6 +60,9 @@ class jiandan(object):
                 if self.key == None:
                     self.getKey(r.text)
                 img_urls.append('https:'+self.decrypt_img_hash(img_hash.get_text(), self.key))
+                # print('debug:')
+                # print(img_hash.get_text())
+                # print(self.key)
             return img_urls
         return
         #     nextPage = text.find(class_ = 'next-comment-page')
@@ -130,8 +135,10 @@ class jiandan(object):
 def main():
     main = jiandan()
     print(main.meizi(1))
-    
-    pass
+
+    # a = jiandan().decrypt_img_hash('2f25GjpNq4Jmsl6E1+u8fgNf/X+PQhSJ/7MPQL845MfjOg1Ioy/PoXlngtsQRjbyhsYTGtDj0bsQKf2XFDYZYCliUgrIEL76uzcIcMybhWkp91hoPN3xRA',"Tp4QVvI0PmbaTaO9XwrriG5NEa9WMJnF")
+    # print(a)
+    # pass
 
 if __name__ == '__main__':
     main()
